@@ -1,0 +1,46 @@
+server:
+  servlet:
+    context-path: /acl
+  port: 8080
+
+cors.allowed.origins: ${CORS_ALLOWED_ORIGINS:http://localhost:8080}
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+
+  jpa:
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true,
+        globally_quoted_identifiers: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/changelog/master.xml
+    default-schema: public
+    url: jdbc:postgresql://localhost:5432/postgres
+    user: postgres
+    password: postgres
+
+logging:
+  level:
+    org.springframework.security.*: DEBUG
+    org.springframework.jdbc.*: DEBUG
+    org.springframework.security.acls.*: DEBUG
+    javax.persistence.*: DEBUG
+    liquibase: DEBUG
+
+
+
