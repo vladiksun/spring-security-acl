@@ -1,12 +1,13 @@
 package com.vlbo.acl.api
 
+import com.vlbo.acl.api.AuthApi.Companion.PATH
 import com.vlbo.acl.domain.dto.AuthRequestDTO
 import com.vlbo.acl.domain.dto.CreateUserRequestDTO
 import com.vlbo.acl.domain.dto.UserViewDTO
 import com.vlbo.acl.domain.model.User
 import com.vlbo.acl.mapper.UserMapper
 import com.vlbo.acl.service.UserService
-import com.vlbo.acl.services.JwtService
+import com.vlbo.acl.security.services.JwtService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,16 +21,20 @@ import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 @RestController
-@RequestMapping(path = ["/api/public"])
+@RequestMapping(path = [PATH])
 class AuthApi(val authenticationManager: AuthenticationManager,
               val jwtService: JwtService,
               val userMapper: UserMapper, val userService: UserService
 ) {
 
+    companion object {
+        const val PATH = "/api/public"
+    }
+
     @PostMapping("login")
     fun login(@RequestBody @Valid request: AuthRequestDTO): ResponseEntity<UserViewDTO> {
         return try {
-            val authenticate = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.userName, request.passWord))
+            val authenticate = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.email, request.passWord))
 
             val user: User = authenticate.principal as User
 

@@ -1,16 +1,23 @@
-package com.vlbo.acl.services
+package com.vlbo.acl.security.services
 
 import com.vlbo.acl.domain.model.User
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
+import io.jsonwebtoken.security.SignatureException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
 import javax.crypto.SecretKey
 
 @Component
 class JwtService {
+
+    companion object {
+        const val USER_AUTHORITIES = "USER_AUTHORITIES"
+    }
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -26,9 +33,12 @@ class JwtService {
     }
 
     fun createJwt(user: User): String {
+        val authorities = user.grantedAuthorities.map { it.authority }
+
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
             .setSubject("${user.id},${user.email}")
+            .claim(USER_AUTHORITIES, authorities)
             .signWith(secretKey)
             .compact()
     }
@@ -51,6 +61,26 @@ class JwtService {
             .body
 
         return claims.subject.split(",".toRegex()).toTypedArray()[1]
+    }
+
+    fun getAuthorities(token: String): MutableList<GrantedAuthority> {
+        val claims: Claims = Jwts.parserBuilder()
+            .setSigningKey(secretKey)
+            .build()
+            .parseClaimsJws(token)
+            .body
+
+        val authorities = mutableListOf<GrantedAuthority>()
+
+        claims[USER_AUTHORITIES]?.let { authoritiesCollection ->
+            if (authoritiesCollection is Collection<*>) {
+                authoritiesCollection.mapTo(authorities) { authority ->
+                    SimpleGrantedAuthority(authority.toString())
+                }
+            }
+        }
+
+        return authorities
     }
 
     fun validate(token: String?): Boolean {

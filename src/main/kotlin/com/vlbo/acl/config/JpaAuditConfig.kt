@@ -16,7 +16,7 @@ class JpaAuditConfig {
     fun auditorProvider(): AuditorAware<String> {
 
         return AuditorAware<String> {
-            Optional.ofNullable(SecurityContextHolder.getContext().authentication.name)
+            Optional.ofNullable(SecurityContextHolder.getContext().authentication?.name)
         }
     }
 

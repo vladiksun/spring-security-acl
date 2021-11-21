@@ -5,10 +5,11 @@ import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
+import javax.persistence.Transient
 import javax.persistence.UniqueConstraint
 
 @Entity
-@Table(name = "USER",
+@Table(name = "APP_USER",
     uniqueConstraints = [
         UniqueConstraint(name = "IDX_EMAIL_UNIQUE", columnNames = ["EMAIL"])
     ])
@@ -25,8 +26,15 @@ class User(): LongIdEntity(), UserDetails {
 
     private val enabled = true
 
+    @Transient
+    var grantedAuthorities = mutableListOf<GrantedAuthority>()
+
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        TODO("Not yet implemented")
+        return grantedAuthorities
+    }
+
+    fun setAuthorities(authorities: MutableList<GrantedAuthority>) {
+        this.grantedAuthorities = authorities
     }
 
     override fun getPassword(): String? {

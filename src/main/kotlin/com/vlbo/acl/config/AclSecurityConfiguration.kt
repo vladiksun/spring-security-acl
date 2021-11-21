@@ -1,6 +1,6 @@
 package com.vlbo.acl.config
 
-import com.vlbo.acl.services.*
+import com.vlbo.acl.security.services.*
 import com.zaxxer.hikari.HikariDataSource
 import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
@@ -64,6 +64,7 @@ class AclSecurityConfiguration(private val cacheManager: CacheManager) {
             permissionGrantingStrategy()
         )
         lookupStrategy.setPermissionFactory(aclPermissionFactory())
+        lookupStrategy.setAclClassIdSupported(true)
         return lookupStrategy
     }
 

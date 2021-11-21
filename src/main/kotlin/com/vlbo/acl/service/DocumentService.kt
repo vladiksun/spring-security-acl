@@ -1,18 +1,18 @@
 package com.vlbo.acl.service
 
-import com.vlbo.acl.domain.dto.DocumentDTO
+import com.vlbo.acl.domain.acl.AclAttribute
 import com.vlbo.acl.domain.model.Document
 import com.vlbo.acl.domain.model.User
 import com.vlbo.acl.repository.DocumentRepository
-import com.vlbo.acl.services.AclPermission
+import com.vlbo.acl.security.services.AclPermission
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
-import org.springframework.http.ResponseEntity
-import org.springframework.security.acls.domain.BasePermission
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.domain.SidRetrievalStrategyImpl
+import org.springframework.security.acls.model.Permission
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
@@ -41,6 +41,13 @@ class DocumentService(
         return saved
     }
 
+    @PreAuthorize("hasPermission(#id, 'com.vlbo.acl.domain.model.Document', 'read')")
+    fun findById(id: Long): Document {
+        val findById = documentRepository.findById(id)
+        return findById
+            .orElseThrow { RuntimeException("Document with ID = ${id} not found") }
+    }
+
     fun readMyAllDocumentsPage(pageNumber: Int, pageSize: Int, sort: Sort): Page<Document> {
         val sidRetrievalStrategy = MySidRetrievalStrategyImpl()
         val sids = sidRetrievalStrategy.getGrantedAuthorities(SecurityContextHolder.getContext().authentication)
@@ -52,6 +59,16 @@ class DocumentService(
         val pageRequest = PageRequest.of(pageNumber, pageSize, sort)
 
         return documentRepository.findAllByPermission(AclPermission.READ.mask, sids.toTypedArray(), pageRequest)
+    }
+
+    @PreAuthorize("hasPermission(#id, 'com.vlbo.acl.domain.model.Document', 'administration')")
+    @Transactional
+    fun grantPermissionsToUserGroup(id: Long, groupName: String, permissions: Array<AclPermission>) {
+        aclSecurityService.grantPermissionsToSid(
+            AclAttribute.GROUP.getSidForAttributeValue(groupName),
+            Document::class.java,
+            id,
+            permissions)
     }
 
     private class MySidRetrievalStrategyImpl : SidRetrievalStrategyImpl() {

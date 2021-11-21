@@ -3,10 +3,10 @@ DO
     DECLARE
         statements CURSOR FOR
             SELECT tablename, schemaname FROM pg_tables
-            WHERE  schemaname = ''s_box_schema'';
+            WHERE  schemaname = ''public'';
         sequenceStatements CURSOR FOR
             SELECT sequencename FROM pg_sequences
-            WHERE schemaname = ''s_box_schema'';
+            WHERE schemaname = ''public'';
     BEGIN
         FOR stmt IN statements
             LOOP

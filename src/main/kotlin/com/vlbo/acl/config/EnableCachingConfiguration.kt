@@ -1,6 +1,6 @@
 package com.vlbo.acl.config
 
-import com.vlbo.acl.services.AclConstants
+import com.vlbo.acl.security.services.AclConstants
 import org.springframework.cache.CacheManager
 import org.springframework.cache.concurrent.ConcurrentMapCache
 import org.springframework.cache.support.SimpleCacheManager

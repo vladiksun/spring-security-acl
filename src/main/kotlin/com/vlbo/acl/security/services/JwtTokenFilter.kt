@@ -1,5 +1,6 @@
-package com.vlbo.acl.services
+package com.vlbo.acl.security.services
 
+import com.vlbo.acl.domain.model.User
 import com.vlbo.acl.repository.UserRepository
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -26,7 +27,7 @@ class JwtTokenFilter(private val userRepository: UserRepository,
 
         // Get authorization header and validate
         val header = request.getHeader(HttpHeaders.AUTHORIZATION)
-        if (header.isEmpty() || !header.startsWith("Bearer ")) {
+        if (header.isNullOrEmpty() || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response)
             return
         }
@@ -41,12 +42,15 @@ class JwtTokenFilter(private val userRepository: UserRepository,
         }
 
         // Get user identity and set it on the spring security context
-        val userDetails: UserDetails? = userRepository.findByEmailIgnoreCase(jwtService.getUsername(token))
+        val userDetails: User? = userRepository.findByEmailIgnoreCase(jwtService.getUsername(token))
+        val authorities = jwtService.getAuthorities(token)
+        userDetails?.setAuthorities(authorities)
 
-        val authentication = UsernamePasswordAuthenticationToken(userDetails, null, null).apply {
+        val authentication = UsernamePasswordAuthenticationToken(userDetails, null, authorities).apply {
             details = WebAuthenticationDetailsSource().buildDetails(request)
         }
 
+        authentication.authorities
         SecurityContextHolder.getContext().authentication = authentication
 
         filterChain.doFilter(request, response)

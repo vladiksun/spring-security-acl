@@ -1,6 +1,7 @@
 package com.vlbo.acl.service
 
-import com.vlbo.acl.services.AclPermission
+import com.vlbo.acl.security.services.AclPermission
+import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.*
@@ -20,6 +21,21 @@ class AclSecurityServiceImpl(val aclService: MutableAclService): AclSecurityServ
     ): AuditableAcl {
         return updatePermissions(
             sid = PrincipalSid(principal.username),
+            type = type,
+            id = id,
+            grantAction = true,
+            aclPermissions = aclPermissions
+        )
+    }
+
+    override fun grantPermissionsToSid(
+        sidName: String,
+        type: Class<*>,
+        id: Long?,
+        aclPermissions: Array<AclPermission>
+    ): AuditableAcl {
+        return updatePermissions(
+            sid = GrantedAuthoritySid(sidName),
             type = type,
             id = id,
             grantAction = true,

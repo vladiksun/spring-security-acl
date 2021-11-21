@@ -1,4 +1,4 @@
-package com.vlbo.acl.services
+package com.vlbo.acl.security.services
 
 object AclAuthorities {
 

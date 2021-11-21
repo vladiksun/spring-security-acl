@@ -1,4 +1,4 @@
-package com.vlbo.acl.services
+package com.vlbo.acl.security.services
 
 import org.springframework.security.acls.domain.PermissionFactory
 import org.springframework.security.acls.model.Permission

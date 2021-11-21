@@ -1,4 +1,4 @@
-package com.vlbo.acl.services
+package com.vlbo.acl.security.services
 
 import org.slf4j.LoggerFactory
 import org.springframework.security.acls.domain.AuditLogger

@@ -1,4 +1,4 @@
-package com.vlbo.acl.services
+package com.vlbo.acl.security.services
 
 import org.apache.commons.lang3.ClassUtils
 import org.springframework.cache.Cache
@@ -33,7 +33,10 @@ open class CustomJdbcAclService(
 
     override fun createOrRetrieveSidPrimaryKey(sid: Sid, allowCreate: Boolean): Long {
         val sidId: Long
-        val cachedSid = cache?.get(sid, Long::class.java)
+
+        val cachedSid = cache?.get(sid)?.let {
+            it.get() as Long
+        }
 
         if (cachedSid != null) {
             return cachedSid
@@ -47,7 +50,11 @@ open class CustomJdbcAclService(
     @Transactional(readOnly = true)
     override fun createOrRetrieveClassPrimaryKey(type: String, allowCreate: Boolean, idType: Class<*>?): Long {
         val classId: Long
-        val cachedClassId = cache?.get(Long, Long::class.java)
+
+        val cachedClassId = cache?.get(type)?.let {
+            it.get() as Long
+        }
+
         if (cachedClassId != null) {
             return cachedClassId
         } else {
@@ -59,8 +66,10 @@ open class CustomJdbcAclService(
 
     @Transactional(readOnly = true)
     override fun findObjectIdentitiesWithAclForSid(sid: Sid): List<ObjectIdentity> {
-        val ownerId = createOrRetrieveSidPrimaryKey(sid, false) ?: return emptyList()
+        val ownerId = createOrRetrieveSidPrimaryKey(sid, false)
+
         val args = arrayOf<Any>(ownerId)
+
         return jdbcOperations.query(
             SELECT_OBJECT_IDENTITIES_FOR_SID,
             { rs, rowNum ->
@@ -76,7 +85,6 @@ open class CustomJdbcAclService(
     }
 
     override fun getRegisteredAclClasses(): Collection<Class<*>> {
-        jdbcOperations
         val classNames: List<String> = jdbcOperations.query(
             SELECT_ALL_CLASSES
         ){ rs, rowNum -> rs.getString("class") }

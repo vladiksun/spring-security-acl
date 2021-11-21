@@ -21,7 +21,7 @@
         </createTable>
     </changeSet>
     <changeSet id="1637441246059-2" author="Vlad (generated)">
-        <createTable tableName="user">
+        <createTable tableName="APP_USER">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
             </column>
@@ -42,12 +42,12 @@
         </createTable>
     </changeSet>
     <changeSet id="1637441246059-3" author="Vlad (generated)">
-        <addUniqueConstraint columnNames="email" constraintName="IDX_EMAIL_UNIQUE" tableName="user"/>
+        <addUniqueConstraint columnNames="email" constraintName="IDX_EMAIL_UNIQUE" tableName="APP_USER"/>
     </changeSet>
     <changeSet id="1637441246059-4" author="Vlad (generated)">
         <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="document"
                                  constraintName="FK_DOCUMENT_ON_OWNER" referencedColumnNames="id"
-                                 referencedTableName="user"/>
+                                 referencedTableName="APP_USER"/>
     </changeSet>
 
 </databaseChangeLog>

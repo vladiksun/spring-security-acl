@@ -1,7 +1,7 @@
 package com.vlbo.acl.config
 
 import com.vlbo.acl.repository.UserRepository
-import com.vlbo.acl.services.JwtTokenFilter
+import com.vlbo.acl.security.services.JwtTokenFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
