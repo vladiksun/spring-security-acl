@@ -4,6 +4,7 @@ server:
   port: 8080
 
 cors.allowed.origins: ${CORS_ALLOWED_ORIGINS:http://localhost:8080}
+jwt.signing.key: ${JWT_SIGNING_KEY:aLnl5w4C387KtyAjxyEc5xMChxSJOsMr8i/uxVKf8KE=}
 
 spring:
   datasource:
@@ -29,10 +30,10 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:liquibase/changelog/master.xml
-    default-schema: public
-    url: jdbc:postgresql://localhost:5432/postgres
-    user: postgres
-    password: postgres
+#    default-schema: public
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    user: postgres
+#    password: postgres
 
 logging:
   level:

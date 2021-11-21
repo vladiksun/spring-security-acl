@@ -1,4 +1,4 @@
-package com.vlbo.acl.model
+package com.vlbo.acl.domain.model
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -34,7 +34,7 @@ class User(): LongIdEntity(), UserDetails {
     }
 
     override fun getUsername(): String? {
-        return this.userName
+        return this.email
     }
 
     override fun isAccountNonExpired(): Boolean {

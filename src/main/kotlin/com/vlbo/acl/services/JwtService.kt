@@ -1,6 +1,6 @@
 package com.vlbo.acl.services
 
-import com.vlbo.acl.model.User
+import com.vlbo.acl.domain.model.User
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
 import org.slf4j.LoggerFactory
@@ -25,7 +25,7 @@ class JwtService {
         jwtParser = Jwts.parserBuilder().setSigningKey(secretKey).build()
     }
 
-    fun createJwt(user: User): String? {
+    fun createJwt(user: User): String {
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
             .setSubject("${user.id},${user.email}")

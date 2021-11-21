@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  postgres:
+    restart: always
+    image: postgres:13.1
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+#    volumes:
+#      - type: bind
+#        source: /c/development/S-BOX/MongoDBData
+#        target: /data/db

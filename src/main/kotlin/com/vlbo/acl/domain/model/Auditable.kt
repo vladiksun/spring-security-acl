@@ -1,4 +1,4 @@
-package com.vlbo.acl.model
+package com.vlbo.acl.domain.model
 
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate

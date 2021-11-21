@@ -1,4 +1,4 @@
-package com.vlbo.acl.model
+package com.vlbo.acl.domain.model
 
 import java.io.Serializable
 import javax.persistence.GeneratedValue
